@@ -1,4 +1,4 @@
-package com.challenge.config;
+/*package com.challenge.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +14,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+//@EnableMethodSecurity
 public class SecurityConfig {
 
     @Value("${cors.allowed-origins-front}")
-    String frontEndUrl;
+    private String frontEndUrl;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
@@ -35,16 +35,24 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry
-                        .addMapping("/**")
-                        .allowedOrigins(frontEndUrl)
-                        .allowedMethods(HttpMethod.GET.name(),
-                                HttpMethod.POST.name(),
-                                HttpMethod.PUT.name(),
-                                HttpMethod.DELETE.name());
+                if (frontEndUrl != null && !frontEndUrl.isEmpty()) {
+                    registry
+                            .addMapping("/**")
+                            .allowedOrigins(frontEndUrl)
+                            .allowedMethods(HttpMethod.GET.name(),
+                                    HttpMethod.POST.name(),
+                                    HttpMethod.PUT.name(),
+                                    HttpMethod.DELETE.name());
+                } else {
+                    registry
+                            .addMapping("/**")
+                            .allowedOrigins("*")
+                            .allowedMethods(HttpMethod.GET.name(),
+                                    HttpMethod.POST.name(),
+                                    HttpMethod.PUT.name(),
+                                    HttpMethod.DELETE.name());
+                }
             }
         };
     }
-
-
-}
+}*/

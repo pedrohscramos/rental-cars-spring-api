@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CarrosRestController {
     private final ListarCarrosQuery listarCarrosQuery;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna a lista com os carros encontrados.", content = {
@@ -29,6 +31,13 @@ public class CarrosRestController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor", content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<List<ListarCarrosQueryResultItem>> listarCarros() {
-        return new ResponseEntity<>(listarCarrosQuery.execute(), HttpStatus.OK);
+        if (listarCarrosQuery == null) {
+            throw new IllegalStateException("listarCarrosQuery não pode ser null");
+        }
+        try {
+            return new ResponseEntity<>(listarCarrosQuery.execute(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
